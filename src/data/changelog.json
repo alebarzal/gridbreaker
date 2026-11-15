@@ -1,5 +1,15 @@
 [
   {
+    "version": "1.2.0",
+    "fecha": "2026-11-15",
+    "novedades": [
+      "Las actualizaciones se descargan dentro de la app, con barra de progreso, y al terminar se abre el instalador.",
+      "Si la descarga falla, puedes abrirla en el navegador como antes.",
+      "En el modo debug, «Simular actualización» enseña también la barra de descarga."
+    ],
+    "resumen": "Descarga de actualizaciones dentro de la app, con barra de progreso."
+  },
+  {
     "version": "1.1.0",
     "fecha": "2026-11-15",
     "novedades": [

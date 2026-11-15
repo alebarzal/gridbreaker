@@ -41,3 +41,8 @@ body { display: flex; align-items: center; justify-content: center; }
 }
 .modal button:active { transform: translateY(3px); box-shadow: 0 1px 0 #b3862b; }
 .modal button.secondary { background: #39405e; color: #e8ecff; box-shadow: 0 4px 0 #1e2238; }
+.modal footer.downloading { flex-direction: column; gap: 8px; }
+.modal .progress { height: 18px; background: #252b44; border: 2px solid #5d6bff; }
+.modal .progress > div { height: 100%; width: 0; background: #ffd166; transition: width 0.1s linear; }
+.modal .progress-text { font-size: 13px; color: #cfd5f5; margin: 0; }
+.modal .body .progress-text { margin-top: 10px; color: #ffd166; }
