@@ -95,6 +95,16 @@ public class UpdaterPlugin extends Plugin {
         }).start();
     }
 
+    /** Borra el APK descargado (se llama al arrancar, ya instalada la actualización). */
+    @PluginMethod
+    public void cleanup(PluginCall call) {
+        File apk = apkFile();
+        boolean removed = !busy && apk.exists() && apk.delete();
+        JSObject res = new JSObject();
+        res.put("removed", removed);
+        call.resolve(res);
+    }
+
     @PluginMethod
     public void install(PluginCall call) {
         File apk = apkFile();

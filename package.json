@@ -1,6 +1,6 @@
 {
   "name": "gridbreaker",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Grid Breaker - arcade breakout de cuadrícula con mundos y jefes",
   "private": true,
   "type": "module",

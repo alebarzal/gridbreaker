@@ -20,9 +20,15 @@ export interface ReleaseInfo {
 interface UpdaterPlugin {
   download(opts: { url: string }): Promise<{ bytes: number }>;
   install(): Promise<void>;
+  cleanup(): Promise<{ removed: boolean }>;
   addListener(event: 'progress', cb: (p: { received: number; total: number }) => void): Promise<PluginListenerHandle>;
 }
 const Updater = registerPlugin<UpdaterPlugin>('Updater');
+
+/** Al arrancar, borra el APK de una actualización anterior para no ocupar espacio. */
+export function cleanupUpdate(): void {
+  if (isNative) void Updater.cleanup().catch(() => {});
+}
 
 const API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`;
 const TIMEOUT_MS = 4000;

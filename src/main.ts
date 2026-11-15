@@ -4,7 +4,7 @@ import { suspendAudio } from './core/audio';
 import { changelogPending, showChangelog } from './core/changelog';
 import { bindLifecycle } from './core/platform';
 import { loadSave } from './core/save';
-import { checkForUpdate, showUpdateNotice } from './core/updates';
+import { checkForUpdate, cleanupUpdate, showUpdateNotice } from './core/updates';
 import { LEVELS } from './game/levels';
 import { GameScene } from './scenes/GameScene';
 import { MenuScene } from './scenes/MenuScene';
@@ -27,6 +27,7 @@ async function boot(): Promise<void> {
   document.addEventListener('visibilitychange', () => suspendAudio(document.hidden));
 
   // La consulta de actualización corre en paralelo y nunca bloquea el juego.
+  cleanupUpdate();
   const update = checkForUpdate();
   if (changelogPending()) await showChangelog(app);
   const info = await update;

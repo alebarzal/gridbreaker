@@ -1,5 +1,14 @@
 [
   {
+    "version": "1.2.1",
+    "fecha": "2026-11-15",
+    "novedades": [
+      "Primera actualización que llega por la descarga integrada: si la has instalado desde la barra de progreso, funciona.",
+      "Al abrir el juego se borra el instalador ya usado, para que no ocupe espacio."
+    ],
+    "resumen": "Estreno de la descarga integrada y limpieza del instalador ya usado."
+  },
+  {
     "version": "1.2.0",
     "fecha": "2026-11-15",
     "novedades": [
