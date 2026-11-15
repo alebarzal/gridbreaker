@@ -1,0 +1,29 @@
+[
+  {
+    "version": "1.0.0",
+    "fecha": "2026-11-15",
+    "novedades": [
+      "30 niveles repartidos en 5 mundos: Pradera, Cueva, Hielo, Lava y Espacio, cada uno con su paleta y su mecánica.",
+      "5 jefes con patrones propios: Gusano de Tierra, Gólem de Roca, Reina de Hielo, Dragón de Lava y Núcleo Cósmico (3 fases).",
+      "10 power-ups: +3 bolas, x2 bolas, pala ancha, pala estrecha, bola de fuego, imán, láser, escudo, ralentizar y vida extra.",
+      "Celdas especiales: duras, metal, explosivas, de power-up, llaves y puertas, lava que se regenera y hielo.",
+      "Combos, partículas, números flotantes y temblor de pantalla.",
+      "Sonido y música chiptune generados por código, con botón de silencio.",
+      "Hasta 3 estrellas por nivel, récords y progreso guardado automáticamente.",
+      "Selector de niveles con mapa por mundos y candados.",
+      "Pantalla de novedades y aviso de nueva versión disponible.",
+      "Versión Android: pantalla completa, vibración, pausa automática y botón atrás."
+    ],
+    "resumen": "Primera versión completa: 5 mundos, 30 niveles, 5 jefes, 10 power-ups, estrellas, guardado y app Android."
+  },
+  {
+    "version": "0.9.0",
+    "fecha": "2026-10-20",
+    "novedades": [
+      "Beta cerrada con los mundos Pradera y Cueva.",
+      "Primeros power-ups: +3 bolas, pala ancha y bola de fuego.",
+      "Primer jefe: Gusano de Tierra."
+    ],
+    "resumen": "Beta cerrada con los dos primeros mundos, el primer jefe y tres power-ups. Sin guardado ni sonido todavía."
+  }
+]

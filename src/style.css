@@ -1,0 +1,37 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; height: 100%; overflow: hidden; background: #05060a;
+  overscroll-behavior: none; touch-action: none;
+  -webkit-user-select: none; user-select: none;
+  font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+}
+body { display: flex; align-items: center; justify-content: center; }
+#game {
+  display: block; touch-action: none;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+}
+#overlay { position: fixed; inset: 0; pointer-events: none; }
+#overlay.open { pointer-events: auto; background: rgba(4, 5, 10, 0.78); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal {
+  width: min(440px, 100%); max-height: 92%; display: flex; flex-direction: column;
+  background: #141826; color: #e8ecff; border: 3px solid #5d6bff;
+  box-shadow: 0 0 0 3px #05060a, 6px 6px 0 3px #000; touch-action: pan-y;
+}
+.modal header { padding: 12px 14px; background: #5d6bff; color: #fff; }
+.modal header h2 { margin: 0; font-size: 18px; letter-spacing: 1px; }
+.modal header small { opacity: 0.85; font-size: 12px; }
+.modal .body { padding: 12px 14px; overflow-y: auto; font-size: 14px; line-height: 1.45; -webkit-overflow-scrolling: touch; }
+.modal ul { margin: 6px 0 12px; padding-left: 18px; }
+.modal li { margin: 4px 0; }
+.modal h3 { margin: 12px 0 4px; font-size: 13px; color: #9aa6ff; text-transform: uppercase; letter-spacing: 1px; }
+.modal details { border-top: 2px solid #252b44; padding: 8px 0; }
+.modal summary { cursor: pointer; color: #ffd166; font-weight: bold; }
+.modal details p { margin: 6px 0 0; color: #b9c0e0; font-size: 13px; }
+.modal pre { white-space: pre-wrap; font-family: inherit; margin: 0; color: #cfd5f5; }
+.modal footer { display: flex; gap: 10px; padding: 12px 14px; border-top: 2px solid #252b44; }
+.modal button {
+  flex: 1; font: inherit; font-weight: bold; font-size: 15px; padding: 12px 8px; cursor: pointer;
+  color: #10131f; background: #ffd166; border: 0; box-shadow: 0 4px 0 #b3862b;
+}
+.modal button:active { transform: translateY(3px); box-shadow: 0 1px 0 #b3862b; }
+.modal button.secondary { background: #39405e; color: #e8ecff; box-shadow: 0 4px 0 #1e2238; }
