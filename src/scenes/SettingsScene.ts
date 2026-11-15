@@ -1,6 +1,7 @@
 import { APP_VERSION, W, view } from '../config';
 import { refreshMusic } from '../core/audio';
 import { showChangelog } from '../core/changelog';
+import { showHelp } from '../core/help';
 import { haptic } from '../core/platform';
 import { persist, resetProgress, save, type Settings } from '../core/save';
 import { text } from '../core/ui';
@@ -30,6 +31,24 @@ export class SettingsScene extends UiScene {
     toggle('MÚSICA', 'music', refreshMusic);
     toggle('VIBRACIÓN', 'haptics', () => haptic('medium'));
     toggle('TEMBLOR', 'shake');
+    // Sensibilidad del arrastre táctil
+    const SENS: [number, string][] = [
+      [1, 'BAJA'],
+      [1.25, 'MEDIA'],
+      [1.6, 'ALTA'],
+    ];
+    const sens = this.addButton('', y, () => {
+      const i = SENS.findIndex((s) => s[0] === save.sensitivity);
+      save.sensitivity = SENS[(i + 1) % SENS.length][0];
+      persist();
+      sensLabel();
+    });
+    const sensLabel = () => (sens.label = `SENSIBILIDAD: ${(SENS.find((s) => s[0] === save.sensitivity) ?? SENS[1])[1]}`);
+    sensLabel();
+    sens.color = '#b9c0e0';
+    y += 30;
+    this.addButton('CÓMO JUGAR', y, () => void showHelp(this.app)).color = '#b9c0e0';
+    y += 30;
     this.addButton('NOVEDADES', y, () => void showChangelog(this.app)).color = '#b9c0e0';
     y += 30;
     const reset = this.addButton('BORRAR PROGRESO', y, () => {

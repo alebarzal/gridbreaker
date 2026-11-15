@@ -24,6 +24,8 @@ export interface SaveData {
   settings: Settings;
   lastSeenVersion: string | null;
   updateSnooze: { version: string; until: number } | null;
+  /** Multiplicador del arrastre táctil de la pala. */
+  sensitivity: number;
 }
 
 const KEY = 'gridbreaker.save.v1';
@@ -34,6 +36,7 @@ const defaults = (): SaveData => ({
   settings: { sound: true, music: true, haptics: true, shake: true },
   lastSeenVersion: null,
   updateSnooze: null,
+  sensitivity: 1.25,
 });
 
 export const save: SaveData = defaults();

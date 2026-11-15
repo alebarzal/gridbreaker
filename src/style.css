@@ -28,6 +28,12 @@ body { display: flex; align-items: center; justify-content: center; }
 .modal summary { cursor: pointer; color: #ffd166; font-weight: bold; }
 .modal details p { margin: 6px 0 0; color: #b9c0e0; font-size: 13px; }
 .modal pre { white-space: pre-wrap; font-family: inherit; margin: 0; color: #cfd5f5; }
+.modal .help-list { list-style: none; padding-left: 0; }
+.modal .help-row { display: flex; align-items: center; gap: 10px; }
+.modal .chip {
+  flex: 0 0 34px; height: 18px; display: inline-flex; align-items: center; justify-content: center;
+  color: #10131f; font-weight: bold; font-size: 12px; box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
 .modal footer { display: flex; gap: 10px; padding: 12px 14px; border-top: 2px solid #252b44; }
 .modal button {
   flex: 1; font: inherit; font-weight: bold; font-size: 15px; padding: 12px 8px; cursor: pointer;

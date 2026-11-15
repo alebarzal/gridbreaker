@@ -64,6 +64,10 @@ export class GameScene extends Scene implements GridHost {
   private shakeAmt = 0;
   private floatCd = 0;
   private sinceDrop = 0;
+  private comboT = 0;
+  private resumeT = 0;
+  private broken = 0;
+  private dryT = 0;
   private clearT = 0;
   private fx: Fx[] = [];
   private bannerMsg: { str: string; color: string; t: number } | null = null;
@@ -107,6 +111,11 @@ export class GameScene extends Scene implements GridHost {
 
   exit(): void {
     keepAwake(false);
+  }
+
+  /** Al volver de la pausa da un respiro antes de reanudar. */
+  resume(): void {
+    if (this.state === 'play') this.resumeT = 1.5;
   }
 
   // ---------------------------------------------------------------- API ---
@@ -165,10 +174,11 @@ export class GameScene extends Scene implements GridHost {
     this.particles.burst(x, y, cause === 'ball' || cause === 'laser' ? 3 : 2, col, 45, 0.35);
     if (cause === 'system' || cause === 'boss') return;
     this.combo++;
+    this.broken++;
     const m = Math.min(8, 1 + Math.floor(this.combo / 12));
     if (m > this.mult) {
       this.mult = m;
-      this.particles.floatText(W / 2, GRID_BOTTOM + 26, `COMBO x${m}`, th.accent, 11);
+      this.comboT = 1;
       sfx('star', 1 + m * 0.06);
     }
     const base = type === Cell.Hard || type === Cell.Ice ? 20 : type === Cell.Explosive ? 30 : type === Cell.Key ? 100 : 10;
@@ -249,6 +259,7 @@ export class GameScene extends Scene implements GridHost {
 
   private dropPower(x: number, y: number, preferMulti = false): void {
     this.sinceDrop = 0;
+    this.dryT = 0;
     let info = preferMulti && Math.random() < 0.7 ? POWERS[0] : randomPower();
     // Con muchas bolas, evita seguir multiplicando sin fin
     const cap = this.boss ? 24 : 90;
@@ -329,6 +340,7 @@ export class GameScene extends Scene implements GridHost {
 
   /** Mueve la bola en un eje y resuelve colisiones solo con las celdas vecinas. */
   private moveAxis(b: Ball, mx: number, my: number, ghost: boolean, bossGhost: boolean): void {
+    const broken0 = this.broken;
     b.x += mx;
     b.y += my;
     if (mx) {
@@ -357,6 +369,7 @@ export class GameScene extends Scene implements GridHost {
         }
       }
     }
+    if (this.broken !== broken0) b.idle = 0;
     const boss = this.boss;
     if (boss && !bossGhost && boss.boxes.length) {
       for (let i = 0; i < boss.boxes.length; i++) {
@@ -366,6 +379,7 @@ export class GameScene extends Scene implements GridHost {
           reflect = true;
           if (b.bossCd <= 0) {
             b.bossCd = 0.2;
+            b.idle = 0;
             if (h.weak) boss.damage(1, b.x, b.y);
             else {
               boss.onArmorHit(i, b.x, b.y);
@@ -411,6 +425,12 @@ export class GameScene extends Scene implements GridHost {
       b.normalize();
     }
     // Si algo ha aparecido encima de la bola, la deja salir sin colisionar
+    // Antiatasco: si lleva mucho sin romper nada ni tocar la pala, cambia de rumbo
+    b.idle += dt;
+    if (b.idle > 9) {
+      b.idle = 0;
+      b.setAngle(Math.atan2(b.dx, -b.dy) + (Math.random() < 0.5 ? -1 : 1) * (0.4 + Math.random() * 0.5));
+    }
     const ghost = this.overlapsSolid(b);
     let bossGhost = false;
     const boss = this.boss;
@@ -447,6 +467,7 @@ export class GameScene extends Scene implements GridHost {
         b.setAngle(Math.max(-1.3, Math.min(1.3, a)));
         b.y = p.y - b.r;
         p.flash = 0.06;
+        b.idle = 0;
         this.combo = 0;
         this.mult = 1;
         sfx('paddle');
@@ -482,6 +503,12 @@ export class GameScene extends Scene implements GridHost {
     this.particles.update(dt);
 
     if (this.state === 'over') return;
+    this.comboT = Math.max(0, this.comboT - dt);
+    // Cuenta atrás al volver de la pausa
+    if (this.resumeT > 0) {
+      this.resumeT -= dt;
+      return;
+    }
     if (this.state === 'clearing') {
       this.clearT -= dt;
       if (Math.random() < dt * 10) {
@@ -499,6 +526,14 @@ export class GameScene extends Scene implements GridHost {
     if (this.state === 'play') {
       this.time += dt;
       this.fireT = Math.max(0, this.fireT - dt);
+      // Ayuda: con pocas bolas y un rato sin power-ups, cae uno desde arriba
+      if (this.balls.length < 4) {
+        this.dryT += dt;
+        if (this.dryT > 12 && this.powerups.length < 6) {
+          this.dropPower(30 + Math.random() * (W - 60), GRID_Y + 6, true);
+          this.particles.floatText(W / 2, GRID_BOTTOM + 26, '¡AYUDA EN CAMINO!', this.theme.accent, 8);
+        }
+      } else this.dryT = 0;
       this.slowT = Math.max(0, this.slowT - dt);
       // Ciclo de gravedad variable
       const g = this.level.mods.gravity;
@@ -553,7 +588,7 @@ export class GameScene extends Scene implements GridHost {
 
     this.updateProjectiles(dt);
     this.grid.update(dt);
-    if (this.boss) {
+    if (this.boss && (this.state !== 'ready' || this.boss.dead)) {
       this.boss.update(dt);
       if (this.boss.done && this.state === 'play') this.win();
     }
@@ -718,7 +753,7 @@ export class GameScene extends Scene implements GridHost {
     const d = p.x - this.lastX;
     this.lastX = p.x;
     this.moved += Math.abs(d);
-    this.paddle.targetX += d * 1.25;
+    this.paddle.targetX += d * save.sensitivity;
   }
 
   onPointerUp(p: Pointer): void {
@@ -815,6 +850,12 @@ export class GameScene extends Scene implements GridHost {
     if (this.state === 'ready') {
       const blink = Math.floor(this.t * 2.5) % 2 === 0;
       if (blink) text(ctx, 'TOCA PARA LANZAR', W / 2, this.paddle.y - 26, { size: 8, align: 'center', color: '#ffffff' });
+    }
+    if (this.comboT > 0) {
+      text(ctx, `COMBO x${this.mult}`, W / 2, GRID_BOTTOM + 26, { size: 11, align: 'center', color: th.accent, alpha: Math.min(1, this.comboT * 2.5) });
+    }
+    if (this.resumeT > 0) {
+      text(ctx, `${Math.ceil(this.resumeT / 0.5)}`, W / 2, GRID_BOTTOM + 74, { size: 30, align: 'center', color: '#ffffff' });
     }
     if (this.mult > 1 && this.state === 'play') {
       text(ctx, `x${this.mult}`, W - 6, GRID_BOTTOM + 12, { size: 10, align: 'right', color: th.accent });
@@ -932,9 +973,15 @@ export class GameScene extends Scene implements GridHost {
       ctx.fillStyle = this.theme.accent;
       ctx.fillRect(bx, 11, Math.round(bw * k), 5);
     }
+    // Reloj: se pone rojo al superar el tiempo de la estrella
+    const secs = Math.floor(this.time);
+    text(ctx, `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, bx + bw + 4, 6, {
+      size: 6,
+      color: this.time > this.level.par ? '#ff8a8a' : '#b9c0e0',
+    });
     // Llaves pendientes
     if (this.grid.hasDoors && this.grid.keysLeft > 0) {
-      text(ctx, `LLAVE`, bx + bw + 4, 13.5, { size: 5, color: '#ffd23f' });
+      text(ctx, `LLAVE`, bx + bw + 4, 14.5, { size: 5, color: '#ffd23f' });
     }
     // Sonido
     const sx = W - 36;

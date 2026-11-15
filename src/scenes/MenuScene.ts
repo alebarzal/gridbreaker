@@ -6,6 +6,8 @@ import type { Pointer } from '../core/Scene';
 import { pixelText, star, text } from '../core/ui';
 import { FAKE_RELEASE, showUpdateNotice } from '../core/updates';
 import { LEVELS } from '../game/levels';
+import { showHelp } from '../core/help';
+import { GameScene } from './GameScene';
 import { LevelSelectScene } from './LevelSelectScene';
 import { SettingsScene } from './SettingsScene';
 import { UiScene } from './UiScene';
@@ -31,12 +33,28 @@ export class MenuScene extends UiScene {
     this.buttons.list.length = 0;
     const y0 = Math.round(view.H * 0.44);
     const world = Math.floor(Math.min(save.unlocked - 1, LEVELS.length - 1) / 6);
-    this.addButton('JUGAR', y0, () => this.app.scenes.set(new LevelSelectScene(this.app, world)), 150, 28).size = 11;
-    this.addButton('AJUSTES', y0 + 38, () => this.app.scenes.set(new SettingsScene(this.app))).color = '#b9c0e0';
-    this.addButton('NOVEDADES', y0 + 68, () => void showChangelog(this.app)).color = '#b9c0e0';
+    const toLevels = () => this.app.scenes.set(new LevelSelectScene(this.app, world));
+    let y = y0;
+    // Con partida empezada, el botón principal lleva directo al siguiente nivel
+    const started = save.unlocked > 1 || Object.keys(save.levels).length > 0;
+    if (started) {
+      const next = LEVELS[Math.min(save.unlocked, LEVELS.length) - 1];
+      this.addButton(`CONTINUAR  ${next.id}`, y, () => this.app.scenes.set(new GameScene(this.app, next)), 150, 28).size = 11;
+      y += 36;
+      this.addButton('NIVELES', y, toLevels).color = '#b9c0e0';
+      y += 28;
+    } else {
+      this.addButton('JUGAR', y, toLevels, 150, 28).size = 11;
+      y += 36;
+    }
+    this.addButton('AJUSTES', y, () => this.app.scenes.set(new SettingsScene(this.app))).color = '#b9c0e0';
+    y += 28;
+    this.addButton('CÓMO JUGAR', y, () => void showHelp(this.app)).color = '#b9c0e0';
+    y += 28;
+    this.addButton('NOVEDADES', y, () => void showChangelog(this.app)).color = '#b9c0e0';
     this.builtDebug = this.app.debug;
     if (this.app.debug) {
-      const dy = y0 + 104;
+      const dy = y + 32;
       const mk = (label: string, i: number, fn: () => void) => {
         const b = this.addButton(label, dy + i * 21, fn, 190, 17);
         b.color = '#7dff7d';
@@ -108,8 +126,9 @@ export class MenuScene extends UiScene {
     ctx.fillRect(Math.round(px - 2 + Math.sin(this.t * 3) * 8), Math.round(160 - Math.abs(Math.sin(this.t * 4)) * 12), 4, 4);
 
     this.buttons.draw(ctx);
-    star(ctx, W / 2 - 22, H - 26, 5, '#ffd23f');
-    text(ctx, `${totalStars()} / ${LEVELS.length * 3}`, W / 2 - 13, H - 26, { size: 8, color: '#ffe14d' });
-    text(ctx, `v${APP_VERSION}${this.app.debug ? '  · DEBUG' : ''}`, W / 2, H - 10, { size: 6, align: 'center', color: '#5b6384' });
+    star(ctx, W / 2 - 22, H - 36, 5, '#ffd23f');
+    text(ctx, `${totalStars()} / ${LEVELS.length * 3}`, W / 2 - 13, H - 36, { size: 8, color: '#ffe14d' });
+    text(ctx, 'Created by Alex Barroso', W / 2, H - 20, { size: 7, align: 'center', color: '#9aa6d6' });
+    text(ctx, `v${APP_VERSION}${this.app.debug ? '  · DEBUG' : ''}`, W / 2, H - 8, { size: 6, align: 'center', color: '#5b6384' });
   }
 }

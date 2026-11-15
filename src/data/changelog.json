@@ -1,5 +1,21 @@
 [
   {
+    "version": "1.1.0",
+    "fecha": "2026-11-15",
+    "novedades": [
+      "Botón «Continuar» en el menú: te lleva directo al siguiente nivel.",
+      "Nueva pantalla «Cómo jugar» con los controles, los power-ups y los tipos de celda.",
+      "Reloj en partida: se pone rojo cuando pierdes la estrella de tiempo.",
+      "Cuenta atrás al volver de la pausa, para que te dé tiempo a colocar el dedo.",
+      "Los jefes ya no atacan antes de que lances la bola.",
+      "Ajuste de sensibilidad de la pala (baja, media, alta).",
+      "Antiatasco: una bola que rebota sin romper nada cambia de rumbo sola.",
+      "El aviso de combo ya no se amontona en pantalla.",
+      "Si te quedas con pocas bolas y llevas un rato sin power-ups, cae uno de ayuda."
+    ],
+    "resumen": "Mejoras de comodidad: botón Continuar, pantalla Cómo jugar, reloj en partida, cuenta atrás tras la pausa y ajuste de sensibilidad."
+  },
+  {
     "version": "1.0.0",
     "fecha": "2026-11-15",
     "novedades": [

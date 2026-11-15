@@ -12,6 +12,8 @@ export class Ball {
   frozen = 0;
   portalCd = 0;
   bossCd = 0;
+  /** Segundos sin romper celdas ni tocar la pala (antiatasco). */
+  idle = 0;
   constructor(
     public x: number,
     public y: number,
